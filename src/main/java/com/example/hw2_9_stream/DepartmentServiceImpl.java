@@ -9,12 +9,16 @@ import java.util.stream.Collectors;
 
 @Service
 public class DepartmentServiceImpl implements DepartmentService {
-    EmployeeService employeeService = new EmployeeServiceImpl();
+
+    private final EmployeeServiceImpl employeeService;
+
+    public DepartmentServiceImpl(EmployeeServiceImpl employeeService) {
+        this.employeeService = employeeService;
+    }
 
     public Employee getMaxSalaryByDepartment(int department) {
         return employeeService.getAllEmployee()
                 .stream()
-                .filter(x -> x.getDepartment() == department)
                 .max(Comparator.comparingDouble(Employee::getSalary))
                 .orElseThrow();
     }
@@ -22,7 +26,6 @@ public class DepartmentServiceImpl implements DepartmentService {
     public Employee getMinSalaryByDepartment(int department) {
         return employeeService.getAllEmployee()
                 .stream()
-                .filter(x -> x.getDepartment() == department)
                 .min(Comparator.comparingDouble(Employee::getSalary))
                 .orElseThrow();
     }
@@ -37,6 +40,6 @@ public class DepartmentServiceImpl implements DepartmentService {
     public Map<Integer, List<Employee>> getAllByDepartment() {
         return employeeService.getAllEmployee()
                 .stream()
-                .collect(Collectors.groupingBy(employee -> employee.getDepartment()));
+                .collect(Collectors.groupingBy(Employee::getDepartment));
     }
 }
